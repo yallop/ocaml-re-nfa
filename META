@@ -1,0 +1,6 @@
+version = "dev"
+description = "Regex-NFA conversion"
+requires = ""
+archive(byte) = "re-nfa.cma"
+archive(native) = "re-nfa.cmxa"
+exists_if = "re-nfa.cma"

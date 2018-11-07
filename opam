@@ -1,0 +1,15 @@
+opam-version: "1.2"
+version: "dev"
+maintainer: "yallop@gmail.com"
+authors: ["Jeremy Yallop" "Nada Amin"]
+homepage: "https://github.com/yallop/ocaml-re-nfa"
+dev-repo:"https://github.com/yallop/ocaml-re-nfa.git"
+bug-reports: "https://github.com/yallop/ocaml-re-nfa/issues"
+license: "MIT"
+build: [make]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "re-nfa"]
+depends: ["ocamlfind" {build}
+          "ocamlbuild" {build}]
+build-test: [make "test"]
+available: [ ocaml-version >= "4.00.0" ]
