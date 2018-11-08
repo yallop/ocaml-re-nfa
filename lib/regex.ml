@@ -133,7 +133,7 @@ let start_state = fresh_state ()
 let rec annotate : 'a. 'a regex -> ('a * int32) regex = function 
   | Empty  -> Empty
   | Eps    -> Eps
-  | Char c -> Char (c, fresh_state ())
+  | Char c -> let p = (c, fresh_state ()) in Char p
   | Alt (e, f) -> Alt (annotate e, annotate f)
   | Seq (e, f) -> Seq (annotate e, annotate f)
   | Star e     -> Star (annotate e)
