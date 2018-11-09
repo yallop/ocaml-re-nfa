@@ -99,7 +99,7 @@ let digraph_of_nfa : Nfa.nfa -> Digraph.t =
     fun n ->
     let name = string_of_int !counter in
     incr counter;
-    let node = Digraph.Node.make name in
+    let node = Digraph.Node.make ~id:name in
     let shape = if Nfa.StateSet.mem n nfa.Nfa.finals then "doublecircle"
                 else "circle" in
     Digraph.Node.with_attrs node ["shape", shape]
@@ -128,7 +128,7 @@ let digraph_of_nfa : Nfa.nfa -> Digraph.t =
   step nfa.start;
   (** Empty node to the left of the start state *)
   let input =
-    Digraph.Node.with_attrs (Digraph.Node.make "")
+    Digraph.Node.with_attrs (Digraph.Node.make ~id:"")
       ["shape", "none"; "width", "0"] in
   (** Initial empty digraph *)
   let dg = Digraph.with_node

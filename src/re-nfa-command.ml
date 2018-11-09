@@ -11,5 +11,5 @@ let () =
              let digraph = Nfa_dot.digraph_of_nfa nfa in
              Format.printf "%a@." Nfa_dot.format_digraph digraph
      end
-  | n -> die "Usage:\n\tre-nfa <regex>"
+  | _ -> die "Usage:\n\tre-nfa <regex>"
 

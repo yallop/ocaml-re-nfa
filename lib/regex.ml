@@ -56,7 +56,7 @@ let rec l = function
   | Char _ -> false
   | Alt (e, f) -> l e || l f
   | Seq (e, f) -> l e && l f
-  | Star e     -> true
+  | Star _     -> true
 
 (** firsts: P(r) = {c | ∃s.cs ∈ L(r) } *)
 let rec p = let open LetterSet in function
@@ -103,7 +103,7 @@ let add_transition i1 c2 i2 sm =
 
 let transition_map_of_factor_set fs = 
   Letter2Set.S.fold
-    (fun ((c1,i1), (c2,i2)) sm -> add_transition i1 c2 i2 sm)
+    (fun ((_,i1), (c2,i2)) sm -> add_transition i1 c2 i2 sm)
     fs
      StateMap.empty
 
