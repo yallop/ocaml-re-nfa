@@ -208,40 +208,55 @@ module Parse =
 struct
   exception Fail
 
-  let rec re_many f = function
-      [] -> raise Fail
-    | [x] -> x
-    | x::rest -> f x (re_many f rest)
+  (** ratom ::= .
+                <character>
+                ( ralt )           *)
+  let rec re_parse_atom : char list -> (_ regex * char list) option = function
+    | '('::rest ->
+       begin match re_parse_alt rest with
+       | (r, ')' :: rest) -> Some (r, rest)
+       | _ -> raise Fail
+       end
+    | [] | ((')'|'|'|'*'|'?'|'+') :: _) -> None
+    | '.' :: rest -> Some (any, rest)
+    | h :: rest -> Some (chr h, rest)
 
-  let rec re_parse (s: char list) ps = match (s,ps) with
-    | ([],_) | (')' :: _, _) ->
-      (re_many seq (List.rev ps), s)
-    | ('.' :: rest, _) ->
-      re_parse rest (any :: ps)
-    | ('('::rest,_) ->
-      begin match re_parse rest [] with
-        | (r, ')' :: rest) -> re_parse rest (r :: ps)
-        | _ -> failwith "Parse failure"
-      end
-    | ('|'::rest,p::ps) ->
-      let (other, rest) = re_parse rest [] in
-      re_parse rest (alt p other :: ps)
-    | ('*' :: rest, p :: ps) ->
-      re_parse rest (star p :: ps)
-    | ('?'::rest,p::ps) ->
-      re_parse rest (opt p :: ps)
-    | ('+'::rest,p::ps) ->
-      re_parse rest (plus p :: ps)
-    | (c :: rest, _) ->
-      re_parse rest (chr c :: ps)
+  (** rsuffixed ::= ratom
+                    atom *  
+                    atom +
+                    atom ?         *)
+ and re_parse_suffixed : char list -> (_ regex * char list) option =
+    fun s -> match re_parse_atom s with
+    | None -> None
+    | Some (r, '*' :: rest) -> Some (star r, rest)
+    | Some (r, '+' :: rest) -> Some (plus r, rest)
+    | Some (r, '?' :: rest) -> Some (opt r, rest)
+    | Some (r, rest) -> Some (r, rest)
+
+  (** rseq ::= <empty>
+               rsuffixed rseq      *)
+  and re_parse_seq (s: char list) =
+    match re_parse_suffixed s with
+    | None -> (eps, s)
+    | Some (r, rest) -> let r', s' = re_parse_seq rest in (seq r r', s')
+
+  (** ralt ::= rseq
+               rseq | ralt         *)
+  and re_parse_alt (s: char list) =
+    match re_parse_seq s with
+    | (r, '|' :: rest) -> let r', s' = re_parse_alt rest in (alt r r', s')
+    | (r, rest) -> (r, rest)
 
   let explode s =
     let rec exp i l =
       if i < 0 then l else exp (i - 1) (s.[i] :: l) in
     exp (String.length s - 1) []
 
-  let parse s = try fst (re_parse (explode s) [])
-                with Fail -> raise (Parse_error s)
+  let parse s =
+    match re_parse_alt (explode s) with
+    | (r, []) -> r
+    | exception Fail -> raise (Parse_error s)
+    | (r, _::_) -> raise (Parse_error s)
 end
 
 let parse = Parse.parse

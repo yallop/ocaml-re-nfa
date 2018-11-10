@@ -57,7 +57,43 @@ let test compile =
     assert (adotstarb "aasdfasdfasdb");
     assert (not (adotstarb "aasdfasdfasdbc"));
     assert (not (adotstarb "caasdfasdfasdb"));
+
+    (* Some tests for precedence *)
+    (* a(bc|de|fg)h should mean a((bc)|(de)|(fg))h, not a(b(c|d)(e|f)g)h *)
+    let abcedfgh = compile "a(bc|de|fg)h" in
+    assert (abcedfgh "abch");
+    assert (abcedfgh "adeh");
+    assert (abcedfgh "afgh");
+    assert (not (abcedfgh "abgh"));
+    assert (not (abcedfgh "abcegh"));
+
+    (* abc⋆d should mean ab(c⋆)d *)
+    let abcstard = compile "abc*d" in
+    assert (abcstard "abd");
+    assert (abcstard "abcd");
+    assert (abcstard "abcccd");
+    assert (not (abcstard "abcabcd"));
+
+    (* a|b*c should mean a|(b*c) *)
+    let aorbstarc = compile "a|b*c" in
+    assert (aorbstarc "a");
+    assert (aorbstarc "c");
+    assert (aorbstarc "bc");
+    assert (aorbstarc "bbbbc");
+    assert (not (aorbstarc "aac"));
+
+    (* a| should mean a|ε *)
+    let aornothing = compile "a|" in
+    assert (aornothing "a");
+    assert (aornothing "");
+
+    (* a(||b|)c should mean a(ε|ε|b|ε)c *)
+    let anothingnothingbnothingc = compile "a(||b|)c" in
+    assert (anothingnothingbnothingc "ac");
+    assert (anothingnothingbnothingc "abc");
+    assert (not (anothingnothingbnothingc "a|c"));
   end
+
 
 let explode s =
   let rec exp i l =
