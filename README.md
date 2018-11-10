@@ -5,6 +5,11 @@ regular expressions into nondeterministic finite automata (NFAs) using
 [Glushkov's construction][glushkov], and for formatting the NFAs using
 [DOT][DOT] so that they can be displayed using [graphviz][graphviz].
 
+### Online demo
+
+The easiest way to try the code is to use the [web UI][web-ui] written
+by [Joel Jakobsson][joelonsql].
+
 ### The `re-nfa` executable
 
 The `re-nfa` executable accepts a single regular expression argument
@@ -114,6 +119,9 @@ pinning this repository:
 opam pin add re-nfa https://github.com/yallop/ocaml-re-nfa.git
 ```
 
+### ReasonML port
+
+A [ReasonML port of this project][reason-port] is available.
 
 [glushkov]: https://en.wikipedia.org/wiki/Glushkov%27s_construction_algorithm
 [DOT]: https://en.wikipedia.org/wiki/DOT_(graph_description_language)
@@ -130,4 +138,6 @@ opam pin add re-nfa https://github.com/yallop/ocaml-re-nfa.git
 [ocaml-re]: https://github.com/ocaml/ocaml-re
 [nfa]: https://github.com/yallop/ocaml-re-nfa/blob/master/lib/nfa.mli
 [nfa_dot]: https://github.com/yallop/ocaml-re-nfa/blob/master/lib/nfa_dot.mli
-
+[web-ui]: https://compiler.org/reason-re-nfa/src/index.html
+[reason-port]: https://github.com/joelonsql/reason-re-nfa
+[joelonsql]: https://github.com/joelonsql
