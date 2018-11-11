@@ -256,7 +256,7 @@ struct
     match re_parse_alt (explode s) with
     | (r, []) -> r
     | exception Fail -> raise (Parse_error s)
-    | (r, _::_) -> raise (Parse_error s)
+    | (_, _::_) -> raise (Parse_error s)
 end
 
 let parse = Parse.parse
