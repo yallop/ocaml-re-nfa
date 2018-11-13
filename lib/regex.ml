@@ -181,7 +181,10 @@ let compile r =
   { start = start_state; finals; next }
 
 (** Various basic and derived regex combinators *)
-let seq l r = Seq (l, r)
+let seq l r =
+  match l, r with
+  | Eps, s | s, Eps -> s
+  | l, r -> Seq (l, r)
 let alt l r =
   match l, r with
     Char c1, Char c2 -> Char (C.union c1 c2)
