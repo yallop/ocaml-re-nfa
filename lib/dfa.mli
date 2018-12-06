@@ -12,6 +12,10 @@ type dfa = {
       next state *)
 }
 
+val minimize : dfa -> dfa
+(** [minimize dfa] is a minimized dfa equivalent to the dfa [dfa],
+    obtained via Brzozowski's algorithm *)
+
 val accept : dfa -> char list -> bool
 (** [accept dfa l] is [true] iff the dfa [dfa] accepts the
     character sequence [l] *)
@@ -26,4 +30,3 @@ val determinize : Nfa.nfa -> dfa
 
 val inject : dfa -> Nfa.nfa
 (** [inject dfa] is the deterministic NFA corresponding to [dfa] *)
-

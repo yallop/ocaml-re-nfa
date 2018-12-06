@@ -6,7 +6,7 @@ let typ = ref "nfa"
 
 let spec = 
   [("-type",
-    Arg.Symbol (["nfa"; "dfa"],
+    Arg.Symbol (["nfa"; "dfa"; "dfa-minimized"],
                 (:=) typ),
     "Output type")]
 
@@ -32,6 +32,11 @@ let () =
   | Some r, "dfa" ->
      let nfa = Regex.compile (parse_re r) in
      let dfa = Dfa.determinize nfa in
+     let digraph = Nfa_dot.digraph_of_nfa (Dfa.inject dfa) in
+     Format.printf "%a@." Nfa_dot.format_digraph digraph;
+  | Some r, "dfa-minimized" ->
+     let nfa = Regex.compile (parse_re r) in
+     let dfa = Dfa.minimize (Dfa.determinize nfa) in
      let digraph = Nfa_dot.digraph_of_nfa (Dfa.inject dfa) in
      Format.printf "%a@." Nfa_dot.format_digraph digraph;
   | _ -> Arg.usage spec usage

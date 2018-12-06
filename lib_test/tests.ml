@@ -146,6 +146,7 @@ let nfa_accept r s = Nfa.accept r (explode s)
 let dfa_accept r s = Dfa.accept r (explode s)
 
 let dfa_compile r = Dfa.determinize (Regex.compile r)
+let dfa_minimize_compile r = Dfa.minimize (dfa_compile r)
 
 let () =
   begin
@@ -161,6 +162,12 @@ let () =
             ~accept:dfa_accept);
     print_endline "OK!";
 
+    print_string "testing DFA-minimzied acceptance..."; flush stdout;
+    test (string_matcher
+            ~compile:dfa_minimize_compile
+            ~accept:dfa_accept);
+    print_endline "OK!";
+
     print_string "regenerate tests (NFA)..."; flush stdout;
     regenerate_tests (combinator_matcher
                         ~compile:Regex.compile
@@ -170,6 +177,12 @@ let () =
     print_string "regenerate tests (DFA)..."; flush stdout;
     regenerate_tests (combinator_matcher
                         ~compile:dfa_compile
+                        ~accept:dfa_accept);
+    print_endline "OK!";
+
+    print_string "regenerate tests (DFA-minimized)..."; flush stdout;
+    regenerate_tests (combinator_matcher
+                        ~compile:dfa_minimize_compile
                         ~accept:dfa_accept);
     print_endline "OK!";
   end
