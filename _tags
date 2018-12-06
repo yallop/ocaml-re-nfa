@@ -3,3 +3,6 @@
 "lib_test": include
 <*/*>: warn(+5+8+10+11+12+14+23+26+27+29)
 <src/*.*>: warn(-24)
+
+<lib_test/*.*>: package(qcheck regenerate)
+
