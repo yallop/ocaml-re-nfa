@@ -58,15 +58,15 @@ let determinize : Nfa.nfa -> dfa =
        state, map, ts, finals
   in
   let start, _, trans, finals =
-    build (StateSet.singleton nfa.Nfa.start) (M.empty, StateMap.empty, StateSet.empty)
+    build nfa.Nfa.start (M.empty, StateMap.empty, StateSet.empty)
   in
   let next s = try StateMap.find s trans with Not_found -> CharMap.empty in
   { start; finals; next }
 
 let inject { start; finals; next } =
-  { Nfa.start; finals;
+  { Nfa.start = Nfa.StateSet.singleton start;
+    finals;
     next = fun s -> CharMap.map StateSet.singleton (next s) }
-
 
 (** A simple DFA interpreter. *)
 let accept dfa inp =

@@ -125,7 +125,7 @@ let digraph_of_nfa : Nfa.nfa -> Digraph.t =
           (nfa.Nfa.next state);
       end
   in
-  step nfa.start;
+  Nfa.StateSet.iter step nfa.start;
   (** Empty node to the left of the start state *)
   let input =
     Digraph.Node.with_attrs (Digraph.Node.make ~id:"")
@@ -141,8 +141,14 @@ let digraph_of_nfa : Nfa.nfa -> Digraph.t =
       states
       dg
   in
-  (** Add the initial edge *)
-  let dg = Digraph.with_edge dg (input, Hashtbl.find states nfa.start) in
+  (** Add the initial edges *)
+  let dg =
+    Nfa.StateSet.fold
+      (fun s dg ->
+        Digraph.with_edge dg (input, Hashtbl.find states s))
+      nfa.start 
+      dg
+  in
   (** Add the other edges *)
   Hashtbl.fold
     (fun (source, target) s dg ->

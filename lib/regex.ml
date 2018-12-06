@@ -178,7 +178,7 @@ let compile r =
     with Not_found -> CharMap.empty
   in
 
-  { start = start_state; finals; next }
+  { start = StateSet.singleton start_state; finals; next }
 
 (** Various basic and derived regex combinators *)
 let seq l r =

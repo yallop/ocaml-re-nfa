@@ -4,8 +4,8 @@ module CharMap = Map.Make(Char)
 type transitions = StateSet.t CharMap.t
 
 type nfa = {
-  start : state;
-  (** the start state *)
+  start : StateSet.t;
+  (** the start states *)
 
   finals: StateSet.t;
   (** the final (or "accept") states *)
@@ -32,4 +32,4 @@ let accept nfa inp =
   let rec step cur = function
     | [] -> StateSet.(not (is_empty (inter cur nfa.finals)))
     | c :: cs -> step (nextss cur c nfa) cs
-  in step (StateSet.singleton nfa.start) inp
+  in step nfa.start inp
