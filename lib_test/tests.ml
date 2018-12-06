@@ -143,14 +143,33 @@ let string_matcher ~compile ~accept =
   fun r -> combinator_matcher (Regex.parse r) ~compile ~accept 
 
 let nfa_accept r s = Nfa.accept r (explode s)
+let dfa_accept r s = Dfa.accept r (explode s)
+
+let dfa_compile r = Dfa.determinize (Regex.compile r)
 
 let () =
   begin
     print_string "testing NFA acceptance..."; flush stdout;
-    test (string_matcher ~compile:Regex.compile ~accept:nfa_accept);
+    test (string_matcher
+            ~compile:Regex.compile
+            ~accept:nfa_accept);
+    print_endline "OK!";
+
+    print_string "testing DFA acceptance..."; flush stdout;
+    test (string_matcher
+            ~compile:dfa_compile
+            ~accept:dfa_accept);
     print_endline "OK!";
 
     print_string "regenerate tests (NFA)..."; flush stdout;
-    regenerate_tests (combinator_matcher ~compile:Regex.compile ~accept:nfa_accept);
+    regenerate_tests (combinator_matcher
+                        ~compile:Regex.compile
+                        ~accept:nfa_accept);
+    print_endline "OK!";
+
+    print_string "regenerate tests (DFA)..."; flush stdout;
+    regenerate_tests (combinator_matcher
+                        ~compile:dfa_compile
+                        ~accept:dfa_accept);
     print_endline "OK!";
   end
