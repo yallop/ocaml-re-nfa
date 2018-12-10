@@ -7,7 +7,7 @@ dev-repo:"git+https://github.com/yallop/ocaml-re-nfa.git"
 bug-reports: "https://github.com/yallop/ocaml-re-nfa/issues"
 license: "MIT"
 build: [[make]
-        [make "test"] {with-test}
+        [make "short-tests"] {with-test}
         ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "re-nfa"]
@@ -15,6 +15,6 @@ depends: [
    "ocaml" {>= "4.02.0"}
    "ocamlfind" {build}
    "ocamlbuild" {build}
-   "regenerate" {with-test}
+#  "regenerate" {with-test}
 ]
 synopsis: "Construct NFAs and DFAs from regular expressions"
