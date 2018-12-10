@@ -5,6 +5,15 @@ module StateSet = Nfa.StateSet
 module StateMap = Map.Make(Int32)
 module CharMap = Nfa.CharMap
 
+(* val union : (key -> 'a -> 'a -> 'a option) -> 'a t -> 'a t -> 'a t *)
+let charmap_union (type a) (f : char -> a -> a -> a option) =
+  let f k x y = match x, y with
+    | None    , None    -> None
+    | Some v  , None    -> Some v
+    | None    , Some v  -> Some v
+    | Some v1 , Some v2 -> f k v1 v2
+  in CharMap.merge f
+
 type dfa = {
   start : state;
   (** the start state *)
@@ -66,7 +75,7 @@ let reverse dfa =
 let transitions states nfa =
   StateSet.fold (fun s m ->
       let m' = nfa.Nfa.next s in
-      CharMap.union (fun _ s s' -> Some (StateSet.union s s')) m m')
+      charmap_union (fun _ s s' -> Some (StateSet.union s s')) m m')
     states
     CharMap.empty
 
@@ -116,7 +125,7 @@ let accept dfa inp =
   let rec step cur = function
     | [] -> StateSet.mem cur dfa.finals
     | c :: cs ->
-       match CharMap.find_opt c (dfa.next cur) with
-       | None -> false
-       | Some s -> step s cs in
+       match CharMap.find c (dfa.next cur) with
+       | exception Not_found -> false
+       | s -> step s cs in
   step dfa.start inp
