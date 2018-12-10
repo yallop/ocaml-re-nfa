@@ -1,16 +1,20 @@
-opam-version: "1.2"
+opam-version: "2.0"
 version: "dev"
 maintainer: "yallop@gmail.com"
 authors: ["Jeremy Yallop" "Nada Amin"]
 homepage: "https://github.com/yallop/ocaml-re-nfa"
-dev-repo:"https://github.com/yallop/ocaml-re-nfa.git"
+dev-repo:"git+https://github.com/yallop/ocaml-re-nfa.git"
 bug-reports: "https://github.com/yallop/ocaml-re-nfa/issues"
 license: "MIT"
-build: [make]
+build: [[make]
+        [make "test"] {with-test}
+        ]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "re-nfa"]
-depends: ["ocamlfind" {build}
-          "ocamlbuild" {build}
-          "regenerate" {test}]
-build-test: [make "test"]
-available: [ ocaml-version >= "4.00.0" ]
+depends: [
+   "ocaml" {>= "4.02.0"}
+   "ocamlfind" {build}
+   "ocamlbuild" {build}
+   "regenerate" {with-test}
+]
+synopsis: "Construct NFAs and DFAs from regular expressions"
