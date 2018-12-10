@@ -1,5 +1,7 @@
 ## re-nfa: convert regular expressions to NFAs
 
+[![Travis build Status](https://travis-ci.org/yallop/ocaml-re-nfa.svg?branch=master)](https://travis-ci.org/yallop/ocaml-re-nfa)
+
 This repository provides a library and executable for converting
 regular expressions into nondeterministic finite automata (NFAs) using
 [Glushkov's construction][glushkov], for converting NFAs into DFAs
