@@ -211,43 +211,63 @@ module Parse =
 struct
   exception Fail
 
+  type t =
+    | Opt : t -> t
+    | Chr : char -> t 
+    | Alt : t * t -> t
+    | Seq : t * t -> t
+    | Star : t -> t
+    | Plus : t -> t
+    | Any : t
+    | Eps : t
+
+  let rec interpret : t -> _ regex = function
+    | Opt t -> opt (interpret t)
+    | Chr c -> chr c
+    | Alt (l, r) -> alt (interpret l) (interpret r)
+    | Seq (l, r) -> seq (interpret l) (interpret r)
+    | Star t -> star (interpret t)
+    | Plus t -> plus (interpret t)
+    | Any -> any
+    | Eps -> eps
+
   (** ratom ::= .
                 <character>
                 ( ralt )           *)
-  let rec re_parse_atom : char list -> (_ regex * char list) option = function
+  let rec re_parse_atom : char list -> (t * char list) option = function
     | '('::rest ->
        begin match re_parse_alt rest with
        | (r, ')' :: rest) -> Some (r, rest)
        | _ -> raise Fail
        end
     | [] | ((')'|'|'|'*'|'?'|'+') :: _) -> None
-    | '.' :: rest -> Some (any, rest)
-    | h :: rest -> Some (chr h, rest)
+    | '.' :: rest -> Some (Any, rest)
+    | h :: rest -> Some (Chr h, rest)
 
   (** rsuffixed ::= ratom
                     atom *  
                     atom +
                     atom ?         *)
- and re_parse_suffixed : char list -> (_ regex * char list) option =
+ and re_parse_suffixed : char list -> (t * char list) option =
     fun s -> match re_parse_atom s with
     | None -> None
-    | Some (r, '*' :: rest) -> Some (star r, rest)
-    | Some (r, '+' :: rest) -> Some (plus r, rest)
-    | Some (r, '?' :: rest) -> Some (opt r, rest)
+    | Some (r, '*' :: rest) -> Some (Star r, rest)
+    | Some (r, '+' :: rest) -> Some (Plus r, rest)
+    | Some (r, '?' :: rest) -> Some (Opt r, rest)
     | Some (r, rest) -> Some (r, rest)
 
   (** rseq ::= <empty>
                rsuffixed rseq      *)
-  and re_parse_seq (s: char list) =
+  and re_parse_seq : char list -> t * char list = fun (s: char list) ->
     match re_parse_suffixed s with
-    | None -> (eps, s)
-    | Some (r, rest) -> let r', s' = re_parse_seq rest in (seq r r', s')
+    | None -> (Eps, s)
+    | Some (r, rest) -> let r', s' = re_parse_seq rest in (Seq (r, r'), s')
 
   (** ralt ::= rseq
                rseq | ralt         *)
   and re_parse_alt (s: char list) =
     match re_parse_seq s with
-    | (r, '|' :: rest) -> let r', s' = re_parse_alt rest in (alt r r', s')
+    | (r, '|' :: rest) -> let r', s' = re_parse_alt rest in (Alt (r, r'), s')
     | (r, rest) -> (r, rest)
 
   let explode s =
@@ -262,4 +282,4 @@ struct
     | (_, _::_) -> raise (Parse_error s)
 end
 
-let parse = Parse.parse
+let parse s = Parse.(interpret (parse s))
