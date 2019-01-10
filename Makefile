@@ -12,7 +12,7 @@ lib:
 clean:
 	$(OCAMLBUILD) -clean
 
-test: short-tests regenerate-tests
+test: short-tests regenerate-tests qcheck-tests
 	$(OCAMLBUILD) tests.native
 	./tests.native
 
@@ -23,6 +23,10 @@ short-tests:
 regenerate-tests:
 	$(OCAMLBUILD) regenerate_tests.native
 	./regenerate_tests.native
+
+qcheck-tests:
+	$(OCAMLBUILD) qcheck_tests.native
+	./qcheck_tests.native
 
 install: lib binary
 	$(OCAMLFIND) install re-nfa META	\

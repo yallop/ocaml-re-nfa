@@ -16,6 +16,7 @@ depends: [
    "ocaml" {>= "4.02.0"}
    "ocamlfind" {build}
    "ocamlbuild" {build}
+#  "qcheck" {with-test}
 #  "regenerate" {with-test}
 ]
 synopsis: "Construct NFAs and DFAs from regular expressions"
