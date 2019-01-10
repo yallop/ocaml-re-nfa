@@ -3,6 +3,9 @@
 type t
 (** The type of regular expressions *)
 
+type charset = Set.Make(Char).t
+(** Sets of characters *)
+
 val empty : t
 (** [empty] rejects every string *)
 
@@ -11,6 +14,9 @@ val eps : t
 
 val any : t
 (** [any] accepts any single character *)
+
+val oneof : charset -> t
+(** [oneof cs] accepts any character in cs *)
 
 val range : char -> char -> t
 (** [range l h] accepts any character in the range [l]..[h] *)
@@ -47,9 +53,14 @@ val parse : string -> t
             r*           (zero or more)
             r+           (one or more)
             c            (literal character)
+            [b]          (POSIX bracket expression)
 
    Raises [Parse_error] on parse error
 *)
+
+val unparse_charset : charset -> string
+(** [unparse_charset cs] is a string denoting a regular expression
+    that accepts any character in [cs], and nothing else *)
 
 val compile : t -> Nfa.nfa
 (** [compile r] translates [r] to an NFA that succeeds on exactly
