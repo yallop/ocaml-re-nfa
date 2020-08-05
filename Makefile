@@ -7,7 +7,7 @@ binary:
 	$(OCAMLBUILD) re-nfa-command.native
 
 lib:
-	$(OCAMLBUILD) re-nfa.cma re-nfa.cmxa
+	$(OCAMLBUILD) re-nfa.a re-nfa.cma re-nfa.cmxa
 
 clean:
 	$(OCAMLBUILD) -clean
@@ -34,7 +34,8 @@ install: lib binary
             _build/lib/nfa_dot.cmi		\
             _build/lib/regex.cmi		\
             _build/lib/re-nfa.cma		\
-            _build/lib/re-nfa.cmxa
+            _build/lib/re-nfa.cmxa              \
+            _build/lib/re-nfa.a
 
 uninstall:
 	$(OCAMLFIND) remove re-nfa
