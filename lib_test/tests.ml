@@ -1,3 +1,4 @@
+open Re_nfa
 open Tests_common
 
 let test compile =

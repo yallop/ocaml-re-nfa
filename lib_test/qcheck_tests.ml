@@ -1,3 +1,4 @@
+open Re_nfa
 open Tests_common
 
 module C = Set.Make(Char)
@@ -12,7 +13,7 @@ let complement set =
 
 let check_all set f = C.for_all f set && not (C.exists f (complement set))
 
-let showset set = C.fold (Printf.sprintf "%c%s") set ""
+let showset set = C.fold (Printf.sprintf "%c%s") set "" [@@ocaml.warning "-32"]
 
 let all_chars = C.elements (complement C.empty)
 let take i l =
@@ -25,7 +26,7 @@ let take i l =
 let charset_gen =
   let open QCheck.Gen in
   int_bound 255 >>= fun cardinal ->
-  map (take cardinal) (shuffle_l all_chars) >>= fun l ->
+  map (take cardinal) (shuffle_list all_chars) >>= fun l ->
   return (C.of_list l)
 
 let charset = QCheck.make charset_gen
