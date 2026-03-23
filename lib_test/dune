@@ -1,0 +1,3 @@
+(tests
+  (names tests qcheck_tests regenerate_tests)
+  (libraries re-nfa regenerate qcheck))

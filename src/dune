@@ -1,0 +1,4 @@
+(executable
+ (name re_nfa_command)
+ (public_name re-nfa)
+ (libraries re-nfa))

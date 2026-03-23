@@ -1,3 +1,4 @@
+open Re_nfa
 open Tests_common
 
 module C = Set.Make(Char)

@@ -1,6 +1,8 @@
+open Re_nfa
+
 (** Top-level program for building DOT representations of NFAs from regexes *)
 
-let die fmt = Printf.kprintf (fun s -> prerr_endline s; exit 1) fmt
+let die fmt = Printf.ksprintf (fun s -> prerr_endline s; exit 1) fmt
 
 let typ = ref "nfa"
 
