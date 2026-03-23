@@ -18,7 +18,7 @@ sig
   end
 
   val empty : t
-  val with_name : t -> string -> t
+  val with_name : t -> string -> t [@@ocaml.warning "-32"]
   val with_node : t -> Node.t -> t
   val with_edge : t -> ?attrs:(string * string) list -> (Node.t * Node.t) -> t
   val with_attrs : t -> (string * string) list -> t

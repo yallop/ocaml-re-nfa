@@ -12,7 +12,7 @@ let complement set =
 
 let check_all set f = C.for_all f set && not (C.exists f (complement set))
 
-let showset set = C.fold (Printf.sprintf "%c%s") set ""
+let showset set = C.fold (Printf.sprintf "%c%s") set "" [@@ocaml.warning "-32"]
 
 let all_chars = C.elements (complement C.empty)
 let take i l =
