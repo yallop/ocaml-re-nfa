@@ -14,7 +14,7 @@ type charset = C.t
 module Letter =
 struct
   type t = C.t * state
-  let compare (_,x) (_,y) = Pervasives.compare x y
+  let compare (_,x) (_,y) = Stdlib.compare x y
 end
 
 (** Sets of single letters *)
@@ -30,7 +30,7 @@ struct
   module Pair = struct
     type t = Letter.t * Letter.t
     let compare ((_,w),(_,x)) ((_,y),(_,z)) =
-      Pervasives.compare (w,x) (y,z)
+      Stdlib.compare (w,x) (y,z)
   end
   module S = Set.Make(Pair)
   let (<+>) = S.union
