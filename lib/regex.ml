@@ -155,25 +155,25 @@ let flatten_transitions : StateSet.t CharSetMap.t -> StateSet.t CharMap.t =
       CharMap.empty
 
 let compile r =
-  (** Give every character set in 'r' a unique identifier *)
+  (* Give every character set in 'r' a unique identifier *)
   let r = annotate r in
 
-  (** The final states are the set of 'last' characters in r,
-      (+ the start state if r accepts the empty string) *)
+  (* The final states are the set of 'last' characters in r,
+     (+ the start state if r accepts the empty string) *)
   let finals =
     if l r then StateSet.add start_state (positions (d r))
     else positions (d r)
   in
 
-  (** Transitions arise from factor (pairs of character sets with a
-      transition between them) ... *)
+  (* Transitions arise from factor (pairs of character sets with a
+     transition between them) ... *)
   let transitions = transition_map_of_factor_set (f_ r) in
 
-  (** ... and from the start state to the initial character sets. *)
+  (* ... and from the start state to the initial character sets. *)
   let initial_transitions = transition_map_of_letter_set (p r) in
   let joint_transitions = StateMap.add start_state initial_transitions transitions in
 
-  (** The 'next' function is built from the transition sets. *)
+  (* The 'next' function is built from the transition sets. *)
   let next s =
     try flatten_transitions (StateMap.find s joint_transitions)
     with Not_found -> CharMap.empty
