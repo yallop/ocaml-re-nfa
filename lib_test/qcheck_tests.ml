@@ -25,7 +25,7 @@ let take i l =
 let charset_gen =
   let open QCheck.Gen in
   int_bound 255 >>= fun cardinal ->
-  map (take cardinal) (shuffle_l all_chars) >>= fun l ->
+  map (take cardinal) (shuffle_list all_chars) >>= fun l ->
   return (C.of_list l)
 
 let charset = QCheck.make charset_gen
